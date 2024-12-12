@@ -133,12 +133,12 @@ class TemplateManager {
 new TemplateManager();
 `;
 
-// 修改 generateHtml 函数
+// ���改 generateHtml 函数
 export function generateHtml() {
     return `<!DOCTYPE html>
 <html lang="zh">
 <head>
-    <title>Sublink Worker</title>
+    <title>SubHub</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://unpkg.com/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
@@ -147,7 +147,7 @@ export function generateHtml() {
 </head>
 <body class="bg-gray-50">
     <div class="max-w-3xl mx-auto p-4">
-        <h1 class="text-2xl font-bold text-center mb-6">订阅转换</h1>
+        <h1 class="text-2xl font-bold text-center mb-6">SubHub订阅转换</h1>
         
         <div class="bg-white rounded-lg shadow p-6 space-y-6">
             <!-- 输入类型选择 -->
