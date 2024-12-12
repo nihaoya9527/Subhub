@@ -1,6 +1,6 @@
-# subhub订阅转换工具
+# SubHub
 
-一个功能强大的代理订阅协议转换工具，支持多种代理协议转换和配置模板管理。
+一个功能强大的订阅转换平台，支持多种代理协议转换和配置模板管理。
 
 ## 功能特点
 
@@ -38,7 +38,7 @@
 
 1. 规则集定义
 ruleset=🎯 全球直连,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/LocalAreaNetwork.list
-ruleset=🛑 广告拦截,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list
+ruleset=�� 广告拦截,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list
 ruleset=🚀 节点选择,[]MATCH
 
 2. 节点分组配置
@@ -70,6 +70,37 @@ custom_proxy_group=🇭🇰 香港节点url-test(港|HK|Hong Kong)http://www.gst
    - TEMPLATE_CONFIG: 用于存储配置模板
 3. 绑定环境变量:
    - TEMPLATE_PASSWORD: 模板管理密码
+   - DEFAULT_TEMPLATE_URL: 默认配置模板链接（可选，默认使用内置链接）
+
+### 环境变量说明
+
+1. **TEMPLATE_PASSWORD**
+   - 必需
+   - 用于模板管理页面的访问控制
+   - 建议使用强密码
+
+2. **DEFAULT_TEMPLATE_URL**
+   - 可选
+   - 默认值: `https://raw.githubusercontent.com/Troywww/singbox_conf/refs/heads/main/singbox_clash_conf.txt`
+   - 用于设置默认的配置模板链接
+
+3. **KV 命名空间**
+   - SUBLINK_KV: 用于存储多条节点信息，24小时自动过期
+   - TEMPLATE_CONFIG: 用于存储用户自定义的配置模板
+
+### 部署方式
+
+1. **通过 Cloudflare Dashboard**
+   - 创建 Worker
+   - 绑定 KV 命名空间
+   - 设置环境变量
+   - 部署代码
+
+2. **通过 Cloudflare Pages**
+   - 连接 GitHub 仓库
+   - 配置构建设置
+   - 绑定 KV 和环境变量
+   - 自动部署
 
 ## 技术栈
 

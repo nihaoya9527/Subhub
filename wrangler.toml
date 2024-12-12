@@ -1,3 +1,8 @@
 name = "subhub"
-main = "_worker.js"
+# main = "_worker.js"  # Pages 不需要这行
 compatibility_date = "2024-01-01"
+
+[build]
+command = ""  # 不需要构建命令
+[build.upload]
+format = "modules"  # 使用 ES modules 格式 

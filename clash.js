@@ -1,5 +1,4 @@
 import Parser from './parser.js';
-import { DEFAULT_TEMPLATE_URL } from './_worker.js';
 
 // 定义节点协议列表
 const NODE_PROTOCOLS = ['vless:', 'vmess:', 'trojan:', 'ss:', 'ssr:', 'hysteria:', 'tuic:', 'hy2:', 'hysteria2:'];
@@ -34,11 +33,16 @@ dns:
       - 240.0.0.0/4
 `;
 
+// 设置默认模板URL和环境变量处理
+const getTemplateUrl = (env) => {
+    return env?.DEFAULT_TEMPLATE_URL || 'https://raw.githubusercontent.com/Troywww/singbox_conf/refs/heads/main/singbox_clash_conf.txt';
+};
+
 export async function handleClashRequest(request, env) {
     try {
         const url = new URL(request.url);
         const directUrl = url.searchParams.get('url');
-        const templateUrl = url.searchParams.get('template') || DEFAULT_TEMPLATE_URL;
+        const templateUrl = url.searchParams.get('template') || getTemplateUrl(env);
         console.log('Fetching template from:', templateUrl);
         
         // 检查必需的URL参数

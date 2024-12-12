@@ -5,6 +5,8 @@
  * @property {KVNamespace} SUBLINK_KV - 用于存储节点信息的短链接
  * @property {KVNamespace} TEMPLATE_KV - 用于存储配置模板
  * @property {string} TEMPLATE_PASSWORD - 模板管理密码
+ * @property {string} DEFAULT_TEMPLATE_URL - 默认配置模板链接
+ * 
  */
 
 import { handleConvertRequest } from './base.js';
@@ -18,9 +20,6 @@ import {
     handleDeleteTemplate,
     generateTemplateManagerHTML
 } from './tempmanager.js';
-
-const DEFAULT_TEMPLATE_URL = 'https://raw.githubusercontent.com/Troywww/singbox_conf/refs/heads/main/singbox_clash_conf.txt';
-export { DEFAULT_TEMPLATE_URL };  // 命名导出
 /**
  * 处理请求
  * @param {Request} request

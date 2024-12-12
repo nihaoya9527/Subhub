@@ -1,5 +1,4 @@
 import Parser from './parser.js';
-import { DEFAULT_TEMPLATE_URL } from './_worker.js';
 
 // 在文件顶部添加规则类型定义
 const RULE_TYPES = {
@@ -89,11 +88,17 @@ const BASE_CONFIG = {
     ]
 };
 
+// 设置默认模板URL和环境变量处理
+const getTemplateUrl = (env) => {
+    return env?.DEFAULT_TEMPLATE_URL || 'https://raw.githubusercontent.com/Troywww/singbox_conf/refs/heads/main/singbox_clash_conf.txt';
+};
+
 export async function handleSingboxRequest(request, env) {
     try {
         const url = new URL(request.url);
-        const sortId = url.searchParams.get('sortId');
         const directUrl = url.searchParams.get('url');
+        const templateUrl = url.searchParams.get('template') || getTemplateUrl(env);
+        console.log('Fetching template from:', templateUrl);
         
         // 检测用户平台
         const userAgent = request.headers.get('User-Agent') || '';
@@ -121,7 +126,6 @@ export async function handleSingboxRequest(request, env) {
         }
 
         // 获取模板配置
-        const templateUrl = url.searchParams.get('template') || DEFAULT_TEMPLATE_URL;
         const templateResponse = await fetch(templateUrl);
         
         // 检查是否是内部模板URL
