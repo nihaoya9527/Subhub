@@ -5,39 +5,71 @@ function decodeNodeName(encodedName, fallback = 'Unnamed') {
     if (!encodedName) return fallback;
     
     try {
+        console.log('Decoding node name:', {
+            original: encodedName
+        });
+        
         let decoded = encodedName;
         
-        // 处理 Base64 编码
+        // 1. 第一次 URL 解码
+        try {
+            const urlDecoded = decodeURIComponent(decoded);
+            console.log('After first URL decode:', {
+                decoded: urlDecoded
+            });
+            decoded = urlDecoded;
+        } catch (e) {
+            console.log('First URL decode failed:', e.message);
+        }
+        
+        // 2. 第二次 URL 解码（处理双重编码）
+        try {
+            const urlDecoded2 = decodeURIComponent(decoded);
+            console.log('After second URL decode:', {
+                decoded: urlDecoded2
+            });
+            decoded = urlDecoded2;
+        } catch (e) {
+            console.log('Second URL decode failed:', e.message);
+        }
+        
+        // 3. 如果看起来是 Base64，尝试 Base64 解码
         if (/^[A-Za-z0-9+/=]+$/.test(decoded)) {
             try {
-                const temp = atob(decoded);
-                if (/^[\x20-\x7E\u4E00-\u9FFF\u3000-\u303F]+$/.test(temp)) {
-                    decoded = temp;
+                const base64Decoded = atob(decoded);
+                const bytes = new Uint8Array(base64Decoded.length);
+                for (let i = 0; i < base64Decoded.length; i++) {
+                    bytes[i] = base64Decoded.charCodeAt(i);
+                }
+                const text = new TextDecoder('utf-8').decode(bytes);
+                console.log('After Base64 decode:', {
+                    text
+                });
+                if (/^[\x20-\x7E\u4E00-\u9FFF]+$/.test(text)) {
+                    decoded = text;
                 }
             } catch (e) {
-                // 如果不是有效的 Base64，保持原样
+                console.log('Base64 decode failed:', e.message);
             }
         }
         
-        // 处理 UTF-8 编码
+        // 4. 尝试 UTF-8 解码
         try {
-            const temp = decodeURIComponent(escape(decoded));
-            if (temp !== decoded) {
-                decoded = temp;
+            const utf8Decoded = decodeURIComponent(escape(decoded));
+            console.log('After UTF-8 decode:', {
+                decoded: utf8Decoded
+            });
+            if (utf8Decoded !== decoded) {
+                decoded = utf8Decoded;
             }
         } catch (e) {
-            // 忽略解码错误
+            console.log('UTF-8 decode failed:', e.message);
         }
         
-        // 处理 URL 编码
-        try {
-            const temp = decodeURIComponent(decoded);
-            if (temp !== decoded) {
-                decoded = temp;
-            }
-        } catch (e) {
-            // 忽略解码错误
-        }
+        console.log('Final decoded result:', {
+            input: encodedName,
+            output: decoded
+        });
         
         return decoded;
     } catch (e) {
@@ -105,30 +137,29 @@ export default class Parser {
      */
     static async parseContent(content, env) {
         try {
-            console.log('Parsing input:', content);
             if (!content) return [];
 
-            let nodes = [];
-            const lines = content.split(/[\n\s]+/).filter(line => line.trim());
-            console.log('Split lines:', lines);
+            // 尝试 Base64 解码
+            let decodedContent = this.tryBase64Decode(content);
+            
+            // 分割成行
+            const lines = decodedContent.split(/[\n\s]+/).filter(line => line.trim());
 
+            let nodes = [];
             for (const line of lines) {
-                console.log('Processing line:', line);
                 if (this.isSubscriptionUrl(line)) {
-                    console.log('Found subscription URL:', line);
-                    const subNodes = await this.parse(line, env); // 递归解析子订阅链接
+                    // 如果是订阅链接，递归解析
+                    const subNodes = await this.parse(line, env);
                     nodes = nodes.concat(subNodes);
                 } else {
-                    console.log('Processing as node:', line);
+                    // 解析单个节点
                     const node = this.parseLine(line.trim());
                     if (node) {
-                        console.log('Parsed node:', node);
                         nodes.push(node);
                     }
                 }
             }
 
-            console.log('Final nodes:', nodes);
             return nodes;
         } catch (error) {
             console.error('Parse error:', error);
@@ -175,8 +206,24 @@ export default class Parser {
      */
     static tryBase64Decode(content) {
         try {
-            return atob(content);
+            // 1. 检查是否看起来像 Base64
+            if (!/^[A-Za-z0-9+/=]+$/.test(content.trim())) {
+                return content;
+            }
+
+            // 2. 尝试 Base64 解码
+            const decoded = atob(content);
+            
+            // 3. 验证解码结果是否包含有效的协议前缀
+            const validProtocols = ['vmess://', 'vless://', 'trojan://', 'ss://', 'ssr://'];
+            if (validProtocols.some(protocol => decoded.includes(protocol))) {
+                return decoded;
+            }
+
+            // 4. 如果解码结果不包含有效协议，返回原内容
+            return content;
         } catch {
+            // 5. 如果解码失败，返回原内容
             return content;
         }
     }
