@@ -1,5 +1,5 @@
 import Parser from './parser.js';
-import { DEFAULT_TEMPLATE_URL } from './worker.js';
+import { DEFAULT_TEMPLATE_URL } from './_worker.js';
 
 // 定义节点协议列表
 const NODE_PROTOCOLS = ['vless:', 'vmess:', 'trojan:', 'ss:', 'ssr:', 'hysteria:', 'tuic:', 'hy2:', 'hysteria2:'];
