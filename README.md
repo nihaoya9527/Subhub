@@ -7,12 +7,12 @@
 - 支持多种代理协议转换:
   - VMess
   - VLESS (支持 Reality)
-  - Trojan
-  - Shadowsocks
-  - ShadowsocksR
-  - Hysteria
-  - Hysteria2
-  - TUIC
+  - Trojan (没有测试)
+  - Shadowsocks (没有测试)
+  - ShadowsocksR (没有测试)
+  - Hysteria (没有测试)
+  - Hysteria2 (没有测试)
+  - TUIC (没有测试)
 
 - 支持多种输出格式:
   - 通用订阅链接
