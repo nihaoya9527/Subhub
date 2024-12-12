@@ -1,5 +1,5 @@
 import Parser from './parser.js';
-import { DEFAULT_TEMPLATE_URL } from './worker.js';
+import { DEFAULT_TEMPLATE_URL } from './_worker.js';
 
 // 在文件顶部添加规则类型定义
 const RULE_TYPES = {
