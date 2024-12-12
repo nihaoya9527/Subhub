@@ -41,13 +41,13 @@ ruleset=🎯 全球直连,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/mast
 ruleset=�� 广告拦截,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list
 ruleset=🚀 节点选择,[]MATCH
 
-2. 节点分组配置
+3. 节点分组配置
 custom_proxy_group=🚀 节点选择select.
 custom_proxy_group=♻️ 自动选择url-test.http://www.gstatic.com/generate_204300,,50
 custom_proxy_group=🇭🇰 香港节点url-test(港|HK|Hong Kong)http://www.gstatic.com/generate_204300,,50
 
 
-3. 节点筛选规则
+4. 节点筛选规则
 - 正则匹配: `(港|HK|Hong Kong)`
 - 反向匹配: `^(?!.*(美|US|States)).*$`
 - 组合匹配: `^(?!.*(美|US|States)).*$(港|HK|Hong Kong)`
