@@ -9,31 +9,22 @@ export async function handleConvertRequest(request, env) {
     try {
         const url = new URL(request.url);
         const sourceUrl = url.searchParams.get('url');
-        
-        console.log('Request params:', { sourceUrl });
 
         if (!sourceUrl) {
             return new Response('Missing url parameter', { status: 400 });
         }
         
-        console.log('Processing sourceUrl:', sourceUrl);
         const nodes = await Parser.parse(sourceUrl, env);
-        console.log('Parsed nodes from URL:', nodes);
 
         if (!nodes || nodes.length === 0) {
-            console.error('No nodes found after parsing');
             return new Response('No valid nodes found', { status: 400 });
         }
 
-        console.log('Converting nodes to links...');
         const convertedNodes = nodes.map(node => {
-            const link = convertToLink(node);
-            console.log('Converted node:', { original: node, converted: link });
-            return link;
+            return convertToLink(node);
         }).filter(Boolean);
 
         const result = convertedNodes.join('\n');
-        console.log('Final result length:', result.length);
 
         return new Response(btoa(result), {
             headers: { 
@@ -43,7 +34,7 @@ export async function handleConvertRequest(request, env) {
         });
     } catch (error) {
         console.error('Convert request error:', error);
-        return new Response(`Error: ${error.message}\n${error.stack}`, { 
+        return new Response(`Error: ${error.message}`, { 
             status: 500,
             headers: { 'Content-Type': 'text/plain' }
         });
@@ -51,7 +42,6 @@ export async function handleConvertRequest(request, env) {
 }
 
 function convertToLink(node) {
-    console.log('Converting node:', node);
     try {
         switch (node.type) {
             case 'vmess':
@@ -71,7 +61,6 @@ function convertToLink(node) {
             case 'tuic':
                 return generateTuicLink(node);
             default:
-                console.warn('Unknown node type:', node.type);
                 return null;
         }
     } catch (error) {
@@ -99,7 +88,7 @@ function generateVmessLink(node) {
             alpn: node.settings.alpn || ''
         };
         
-        // 先将配置转换�� UTF-8 编码的字符串
+        // 先将配置转换为 UTF-8 编码的字符串
         const jsonString = JSON.stringify(config);
         const encoder = new TextEncoder();
         const utf8Bytes = encoder.encode(jsonString);

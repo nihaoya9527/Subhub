@@ -81,7 +81,7 @@ async function handleRequest(request, env) {
             'Access-Control-Allow-Headers': 'Content-Type'
         };
         
-        // 处理 OPTIONS 请求
+        // ���理 OPTIONS 请求
         if (request.method === 'OPTIONS') {
             return new Response(null, { headers: corsHeaders });
         }
@@ -117,23 +117,21 @@ async function handleSaveRequest(request, env) {
 
     try {
         const { nodes } = await request.json();
-        console.log('Received nodes:', nodes);
         if (!nodes) {
             return new Response('No nodes provided', { status: 400 });
         }
 
         const id = crypto.randomUUID();
-        console.log('Generated ID:', id);
         
         await env.SUBLINK_KV.put(id, nodes, {
             expirationTtl: 86400 // 24小时过期
         });
-        console.log('Nodes saved to KV with ID:', id);
 
         return new Response(JSON.stringify({ id }), {
             headers: { 'Content-Type': 'application/json' }
         });
     } catch (error) {
+        // 保留错误日志，这对于排查问题很重要
         console.error('Save nodes error:', error);
         return new Response(`Internal Server Error: ${error.message}`, { 
             status: 500,

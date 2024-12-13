@@ -98,7 +98,6 @@ export async function handleSingboxRequest(request, env) {
         const url = new URL(request.url);
         const directUrl = url.searchParams.get('url');
         const templateUrl = url.searchParams.get('template') || getTemplateUrl(env);
-        console.log('Fetching template from:', templateUrl);
         
         // 检测用户平台
         const userAgent = request.headers.get('User-Agent') || '';
@@ -106,12 +105,6 @@ export async function handleSingboxRequest(request, env) {
                                userAgent.includes('iPad') || 
                                userAgent.includes('Macintosh') ||
                                userAgent.includes('SFI/');
-        
-        console.log('User-Agent check:', {
-            userAgent,
-            isApplePlatform,
-            isSingboxIOS: userAgent.includes('SFI/')
-        });
 
         // 检查必需的URL参数
         let nodes = [];
@@ -145,13 +138,7 @@ export async function handleSingboxRequest(request, env) {
             templateContent = await templateResponse.text();
         }
 
-        // 添加日志检查Content-Type
-        console.log('Template response headers:', {
-            contentType: templateResponse.headers.get('content-type'),
-            url: templateUrl
-        });
-
-        // 生成完整的 Singbox 配置，传入平台信息
+        // 生成完整的 Singbox 配置
         const config = await generateSingboxConfig(templateContent, nodes, isApplePlatform);
 
         return new Response(JSON.stringify(config, null, 2), {
@@ -228,8 +215,6 @@ async function generateSingboxConfig(templateContent, proxies, isApplePlatform) 
         final: finalOutbound
     };
     config.experimental = {};
-
-    // 如果是苹果平台，可以在这里添加特殊的配置处
 
     return config;
 }

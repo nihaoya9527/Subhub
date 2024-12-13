@@ -98,29 +98,20 @@ export async function handleClashRequest(request, env) {
 }
 
 async function generateClashConfig(templateContent, nodes) {
-    console.log("Starting generateClashConfig with nodes:", nodes);
-    
     let config = BASE_CONFIG + '\n';
-    console.log("Base config:", config);
     
     // 添加代理节点
     config += 'proxies:\n';
-    console.log("Converting nodes to Clash format...");
     
     const proxies = nodes.map(node => {
-        console.log("Converting node:", node);
         const converted = convertNodeToClash(node);
-        console.log("Converted to:", converted);
         return converted;
     }).filter(Boolean);
-    
-    console.log("All converted proxies:", proxies);
     
     proxies.forEach(proxy => {
         config += '  -';
         function writeValue(obj, indent = 4) {
             Object.entries(obj).forEach(([key, value]) => {
-                // 跳过 undefined 和 null 值
                 if (value === undefined || value === null) {
                     return;
                 }
@@ -130,7 +121,6 @@ async function generateClashConfig(templateContent, nodes) {
                     config += `\n${spaces}${key}:`;
                     writeValue(value, indent + 2);
                 } else {
-                    // 处理布尔值和数字
                     const formattedValue = typeof value === 'boolean' || typeof value === 'number' 
                         ? value 
                         : `"${value}"`;
@@ -311,7 +301,6 @@ async function generateClashConfig(templateContent, nodes) {
 }
 
 function convertNodeToClash(node) {
-    console.log("Converting node type:", node.type);
     switch (node.type) {
         case 'vmess':
             return convertVmess(node);
@@ -330,7 +319,6 @@ function convertNodeToClash(node) {
         case 'tuic':
             return convertTuic(node);
         default:
-            console.warn("Unsupported node type:", node.type);
             return null;
     }
 }

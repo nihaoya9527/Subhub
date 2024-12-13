@@ -5,33 +5,19 @@ function decodeNodeName(encodedName, fallback = 'Unnamed') {
     if (!encodedName) return fallback;
     
     try {
-        console.log('Decoding node name:', {
-            original: encodedName
-        });
-        
         let decoded = encodedName;
         
         // 1. 第一次 URL 解码
         try {
             const urlDecoded = decodeURIComponent(decoded);
-            console.log('After first URL decode:', {
-                decoded: urlDecoded
-            });
             decoded = urlDecoded;
-        } catch (e) {
-            console.log('First URL decode failed:', e.message);
-        }
+        } catch (e) {}
         
         // 2. 第二次 URL 解码（处理双重编码）
         try {
             const urlDecoded2 = decodeURIComponent(decoded);
-            console.log('After second URL decode:', {
-                decoded: urlDecoded2
-            });
             decoded = urlDecoded2;
-        } catch (e) {
-            console.log('Second URL decode failed:', e.message);
-        }
+        } catch (e) {}
         
         // 3. 如果看起来是 Base64，尝试 Base64 解码
         if (/^[A-Za-z0-9+/=]+$/.test(decoded)) {
@@ -42,38 +28,22 @@ function decodeNodeName(encodedName, fallback = 'Unnamed') {
                     bytes[i] = base64Decoded.charCodeAt(i);
                 }
                 const text = new TextDecoder('utf-8').decode(bytes);
-                console.log('After Base64 decode:', {
-                    text
-                });
                 if (/^[\x20-\x7E\u4E00-\u9FFF]+$/.test(text)) {
                     decoded = text;
                 }
-            } catch (e) {
-                console.log('Base64 decode failed:', e.message);
-            }
+            } catch (e) {}
         }
         
         // 4. 尝试 UTF-8 解码
         try {
             const utf8Decoded = decodeURIComponent(escape(decoded));
-            console.log('After UTF-8 decode:', {
-                decoded: utf8Decoded
-            });
             if (utf8Decoded !== decoded) {
                 decoded = utf8Decoded;
             }
-        } catch (e) {
-            console.log('UTF-8 decode failed:', e.message);
-        }
-        
-        console.log('Final decoded result:', {
-            input: encodedName,
-            output: decoded
-        });
+        } catch (e) {}
         
         return decoded;
     } catch (e) {
-        console.warn('Failed to decode node name:', e);
         return encodedName || fallback;
     }
 }
@@ -89,7 +59,6 @@ export default class Parser {
             // 检查是否为内部URL格式
             if (url.startsWith('http://inner.nodes.secret/id-')) {
                 const kvId = url.replace('http://inner.nodes.secret/id-', '');
-                console.log('Parsing input:', kvId);
                 // 从KV读取节点信息
                 const nodesData = await env.SUBLINK_KV.get(kvId);
                 if (!nodesData) {
@@ -125,7 +94,6 @@ export default class Parser {
             const content = await response.text();
             return this.parseContent(content, env);
         } catch (error) {
-            console.error('Parse error:', error);
             throw error;
         }
     }
@@ -234,7 +202,6 @@ export default class Parser {
      * @returns {Object|null}
      */
     static parseLine(line) {
-        console.log('Parsing line:', line);
         if (!line) return null;
 
         try {
@@ -256,11 +223,8 @@ export default class Parser {
             } else if (line.startsWith('tuic://')) {
                 return this.parseTuic(line);
             }
-
-            console.warn('Unknown protocol:', line.split('://')[0]);
             return null;
         } catch (error) {
-            console.error('Parse line error:', error);
             return null;
         }
     }

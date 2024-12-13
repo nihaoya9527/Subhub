@@ -2,6 +2,11 @@
 
 一个功能强大的订阅转换平台，支持多种代理协议转换和配置模板管理。
 
+## 快速开始
+
+- 🎥 视频教程：[YouTube - SubHub 使用教程](https://www.youtube.com/watch?v=wS1bxcGmZIU)
+- 🌐 示例网站：[SubHub Demo](http://subhub-test.698910.xyz)
+
 ## 功能特点
 
 - 支持多种代理协议转换:
