@@ -4,33 +4,39 @@ import Parser from './parser.js';
 const NODE_PROTOCOLS = ['vless:', 'vmess:', 'trojan:', 'ss:', 'ssr:', 'hysteria:', 'tuic:', 'hy2:', 'hysteria2:'];
 
 // 基础配置
-const BASE_CONFIG = `mixed-port: 7890
+const BASE_CONFIG = `port: 7890
+socks-port: 7891
 allow-lan: true
-external-controller: 127.0.0.1:9090
-secret: ''
-bind-address: '*'
 mode: rule
 log-level: info
-ipv6: false
+external-controller: :9090
 dns:
   enable: true
-  listen: 0.0.0.0:53
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
+  nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  fallback:
+    - 8.8.8.8
+    - 8.8.4.4
   default-nameserver:
     - 223.5.5.5
     - 119.29.29.29
-  nameserver:
-    - https://dns.alidns.com/dns-query
-    - https://doh.pub/dns-query
-  fallback:
-    - https://1.0.0.1/dns-query
-    - tls://dns.google
-  fallback-filter:
-    geoip: true
-    geoip-code: CN
-    ipcidr:
-      - 240.0.0.0/4
+  fake-ip-filter:
+    - '*.lan'
+    - localhost.ptlogin2.qq.com
+    - '+.srv.nintendo.net'
+    - '+.stun.playstation.net'
+    - '+.msftconnecttest.com'
+    - '+.msftncsi.com'
+    - '+.xboxlive.com'
+    - 'msftconnecttest.com'
+    - 'xbox.*.microsoft.com'
+    - '*.battlenet.com.cn'
+    - '*.battlenet.com'
+    - '*.blzstatic.cn'
+    - '*.battle.net'
 `;
 
 // 设置默认模板URL和环境变量处理
